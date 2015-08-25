@@ -10,10 +10,10 @@ import string
 
 
 
-player1 = ""
-player2 = ""
-player3 = ""
-player4 = ""
+player1 = make_player([], 1,1)
+player2 = make_player([],2,2)
+player3 = make_player([],3,3)
+player4 = make_player([],4,4)
 
 leading = 0
 played = []
@@ -22,12 +22,22 @@ suit_led = "Clubs"
 first_hand = True
 
 
+def scores():
+    global player1
+    global player2
+    global player3
+    global player4
 
+    print player1.Points
+    print player2.Points
+    print player3.Points
+    print player4.Points
 def card_to_throwaway(Player):
     """
-    Function for deciding the cpu's throwaway card.
-    First it tries to throw away the queen of spades, then throws
-    its hearts
+    Each CPU plays very defensively:
+        1. Throw away the queen of spades
+        2. Throw away Hearts
+        3. Throw highest remaining card
     """
     queen_of_spades= make_card("Queen","Spades")
     if queen_of_spades in Player.Spades:
@@ -46,8 +56,19 @@ def get_cards_of_suit(Player,suit):
         return Player.Hearts
     else:
         return Player.Diamonds
+def distribute_points():
+    global played
+    points = 0
+    point_cards = [x[1] for x in played if x[1].suit == "Hearts" or (x[1].suit == "Spades" and x[1].name == "Queen")]
+    for card in point_cards:
+        if card.suit == "Hearts":
+            points += 1
+        else:
+            points += 13
+    return points
 
-def get_next_lead():
+
+def get_next_turn_order():
     global turn_order
     global played
     global leading
@@ -66,24 +87,28 @@ def get_next_lead():
     turn_order = [same_suit[0][0]]
     if turn_order[0].player_num == 1:
         turn_order = [player1,player2,player3,player4]
+        player1.Points = player1.Points + distribute_points()
         player1.turn_pos = 1
         player2.turn_pos = 2
         player3.turn_pos = 3
         player4.turn_pos = 4
     elif turn_order[0].player_num == 2:
         turn_order = [player2,player3,player4,player1]
+        player2.Points = player2.Points + distribute_points()
         player1.turn_pos = 4
         player2.turn_pos = 1
         player3.turn_pos = 2
         player4.turn_pos = 3
     elif turn_order[0].player_num == 3:
         turn_order = [player3,player4,player1,player2]
+        player3.Points = player3.Points + distribute_points()
         player1.turn_pos = 3
         player2.turn_pos = 4
         player3.turn_pos = 1
         player4.turn_pos = 2
     else:
         turn_order = [player4,player1,player2,player3]
+        player4.Points = player4.Points + distribute_points()
         player1.turn_pos = 2
         player2.turn_pos = 3
         player3.turn_pos = 4
@@ -217,12 +242,10 @@ def setup():
         player4.turn_pos = 1
         turn_order = [player4,player1,player2,player3]
 
-
     player1.print_hand()
     player2.print_hand()
     player3.print_hand()
     player4.print_hand()
-
 
 def run():
     global deck
@@ -236,7 +259,7 @@ def run():
         played = []
         for player in turn_order:
             play(player)
-        get_next_lead()
+        get_next_turn_order()
         deck_stats(deck)
         print("\n")
     return False

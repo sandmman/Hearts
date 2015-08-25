@@ -1,7 +1,7 @@
 class Player(object):
     player_num = 0
     turn_pos = 0
-    points = 0
+    Points = 0
     Hand = []
     Clubs = []
     Spades = []

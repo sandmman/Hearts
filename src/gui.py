@@ -47,7 +47,7 @@ class Gui(Tkinter.Tk):
         p1 = Tkinter.StringVar()
         label = Tkinter.Label(self, textvariable=p1, fg="Purple")
         label.grid(column=0,row=1)
-        p1.set("Player1");
+        p1.set("Player1: " + str(setup.player1.Points));
 
         back = "/Users/aaronliberatore/Documents/cardCounting/classic-cards/back.gif"
         card = Tkinter.PhotoImage(file=back)
@@ -58,7 +58,7 @@ class Gui(Tkinter.Tk):
         p2 = Tkinter.StringVar()
         label2 = Tkinter.Label(self, textvariable=p2,fg="Green")
         label2.grid(column=1,row=1)
-        p2.set("Player2");
+        p2.set("Player2 : " + str(setup.player2.Points));
 
         card2 = Tkinter.PhotoImage(file=back)
         w2 = Tkinter.Label(self, image=card2)
@@ -68,7 +68,7 @@ class Gui(Tkinter.Tk):
         p3 = Tkinter.StringVar()
         label3 = Tkinter.Label(self, textvariable=p3, fg="Red")
         label3.grid(column=1,row=3)
-        p3.set("Player3");
+        p3.set("Player3: " + str(setup.player3.Points));
 
         card3 = Tkinter.PhotoImage(file=back)
         w3 = Tkinter.Label(self, image=card3)
@@ -78,13 +78,12 @@ class Gui(Tkinter.Tk):
         p4 = Tkinter.StringVar()
         label4 = Tkinter.Label(self, textvariable=p4, fg="Blue")
         label4.grid(column=0,row=3)
-        p4.set("Player4");
+        p4.set("Player4: " + str(setup.player4.Points));
 
         card4 = Tkinter.PhotoImage(file=back)
         w4 = Tkinter.Label(self, image=card4)
         w4.image = card4
         w4.grid(column=0,row=4)
-
 
         self.grid_columnconfigure(0,weight=1)
 
@@ -131,13 +130,13 @@ class Gui(Tkinter.Tk):
         for x in setup.played:
             self.update_image()
             if x[0].player_num == 1:
-                p1.set("Player 1: " + x[1].name + " of " + x[1].suit)
+                p1.set("Player1: " + str(setup.player1.Points))
             elif x[0].player_num == 2:
-                p2.set("Player 2: " + x[1].name + " of " + x[1].suit)
+                p2.set("Player2: " + str(setup.player2.Points))
             elif x[0].player_num == 3:
-                p3.set("Player 3: " + x[1].name + " of " + x[1].suit)
+                p3.set("Player3: " + str(setup.player3.Points))
             else:
-                p4.set("Player 4: " + x[1].name + " of " + x[1].suit)
+                p4.set("Player4: " + str(setup.player4.Points))
 
     def get_file_path(self,card):
         card_file = "/Users/aaronliberatore/Documents/cardCounting/classic-cards/"
