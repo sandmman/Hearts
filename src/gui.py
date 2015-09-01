@@ -1,10 +1,10 @@
-###### Gui Setup ######
+###### gui configure ######
 import card
 import random
 import Tkinter
 import string
 import time
-import setup
+import configure
 
 p = ""
 p1 = ""
@@ -20,7 +20,7 @@ app = ""
 card_chosen = card.make_card("2","Clubs")
 back = "/Users/aaronliberatore/Documents/cardCounting/classic-cards/back.gif"
 
-class Gui(Tkinter.Tk):
+class gui(Tkinter.Tk):
 
     def __init__(self, parent):
         Tkinter.Tk.__init__(self, parent)
@@ -46,14 +46,17 @@ class Gui(Tkinter.Tk):
         global p4
 
         self.grid()
-
-        button = Tkinter.Button(self,text="Next Play!", command=setup.game.NextPlay)
-        button.grid(column=0,row=0)
+        if configure.game.user_player == False:
+            button = Tkinter.Button(self,text="Next Play!", command=configure.game.NextPlay)
+            button.grid(column=0,row=0)
+        else:
+            button = Tkinter.Button(self,text="Next Play!", command= lambda: self.play(configure.game.turn_order))
+            button.grid(column=0,row=0)
 
         p = Tkinter.StringVar()
         label = Tkinter.Label(self, textvariable=p)
         label.grid(column=1,row=0)
-        p.set("Player Leading: " + str(setup.game.turn_order[0].name));
+        p.set("Player Leading: " + str(configure.game.turn_order[0].name));
 
         """Initialize Player/Point Labels"""
 
@@ -76,6 +79,30 @@ class Gui(Tkinter.Tk):
         label4 = Tkinter.Label(self, textvariable=p4, fg="Blue")
         label4.grid(column=0,row=3)
         p4.set("player4: 0");
+
+    def play(self,order):
+        global p
+        global card_chosen
+
+        if len(order) == 0:
+            return
+        if len(configure.game.deck) == 0:
+            self.stats_window()
+        # Check if hand is over
+        if len(configure.game.cards_on_table) == 4:
+            configure.game.cards_on_table = []
+            self.reset_cards()
+
+        p.set("Player Leading: " + str(configure.game.turn_order[0].name));
+
+        if order[0].name == 1 and configure.game.user_player:
+            configure.game.single_player()
+
+        configure.game.play(order[0],card_chosen)
+        self.update_image(configure.game.cards_on_table[-1][1],configure.game.cards_on_table[-1][0])
+        if len(configure.game.cards_on_table) == 4:
+            self.update_points()
+        self.play(order[1:])
 
     def initialize_cards(self):
         global w1
@@ -191,15 +218,15 @@ class Gui(Tkinter.Tk):
         w4.image = img4
 
     def update_points(self):
-        for x in setup.game.cards_on_table:
+        for x in configure.game.cards_on_table:
             if x[0].name == 1:
-                p1.set("player1: " + str(setup.game.player1.Points))
+                p1.set("player1: " + str(configure.game.player1.Points))
             elif x[0].name == 2:
-                p2.set("player2: " + str(setup.game.player2.Points))
+                p2.set("player2: " + str(configure.game.player2.Points))
             elif x[0].name == 3:
-                p3.set("player3: " + str(setup.game.player3.Points))
+                p3.set("player3: " + str(configure.game.player3.Points))
             else:
-                p4.set("player4: " + str(setup.game.player4.Points))
+                p4.set("player4: " + str(configure.game.player4.Points))
 
 def get_file_path(card):
     card_file = "/Users/aaronliberatore/Documents/cardCounting/classic-cards/"
@@ -209,23 +236,23 @@ def get_file_path(card):
 
 def which_player(i):
     if i == 0:
-        return setup.game.player1
+        return configure.game.player1
     elif i == 1:
-        return setup.game.player2
+        return configure.game.player2
     elif i == 2:
-        return setup.game.player3
+        return configure.game.player3
     else:
-        return setup.game.player4
+        return configure.game.player4
 
 def single_player_game():
     global app
 
     app.destroy()
 
-    setup.setup()
-    setup.game.user_player = True
+    configure.setup()
+    configure.game.user_player = True
 
-    app = Gui(None)
+    app = gui(None)
     app.geometry("300x300")
     app.title("Hearts")
     app.mainloop()
@@ -235,10 +262,10 @@ def simulation():
 
     app.destroy()
 
-    setup.setup()
-    setup.game.user_player = False
+    configure.setup()
+    configure.game.user_player = False
 
-    app = Gui(None)
+    app = gui(None)
     app.geometry("300x300")
     app.title("Hearts")
     app.mainloop()

@@ -1,11 +1,6 @@
 values = ["2","3","4","5","6","7","8","9","10","Jack","Queen","King","Ace"]
 suits = ["Clubs","Spades","Hearts","Diamonds"]
 
-deck = []
-clubs  = []
-spades = []
-hearts = []
-diamonds = []
 
 class Card(object):
     name = ""
@@ -37,7 +32,12 @@ def deck_stats(d):
 def deck_build():
     global values
     global suits
-    global deck
+
+    deck = []
+    clubs  = []
+    spades = []
+    hearts = []
+    diamonds = []
 
     for x in values:
         for suit in suits:

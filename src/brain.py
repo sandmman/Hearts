@@ -3,7 +3,7 @@ This module is where all the cpu decision making takes place
 """
 import card
 import player
-import setup
+import configure
 
 
 """
@@ -33,7 +33,7 @@ def card_to_lead(Player):
         there are other higher cards out
     """
     card = probabilities_of_winning_trick(Player.Hand)[0][0]
-    setup.game.bundler(Player, card)
+    configure.game.bundler(Player, card)
 
 def card_to_follow(Player,lead):
     """
@@ -52,14 +52,14 @@ def card_to_follow(Player,lead):
         # If you go last, won't get points, and have low prob of winning next hand
         # --> play highest card of suit
         if (Player.turn_pos == 4 and
-            setup.game.points_on_table() == 0 and
+            configure.game.points_on_table() == 0 and
             probs_for_next_hand[0][1] < 0.4):
-            setup.game.bundler(Player,probs[-1][0]);
+            configure.game.bundler(Player,probs[-1][0]);
         else:
-            setup.game.bundler(Player,probs[0][0]);
+            configure.game.bundler(Player,probs[0][0]);
     #Player can throw away cards of another suit
     else:
-        setup.game.bundler(Player,card_to_throwaway(Player))
+        configure.game.bundler(Player,card_to_throwaway(Player))
 
 
 """Probability Functions"""
@@ -76,24 +76,24 @@ def probabilities_of_winning_trick(hand):
     for x in hand:
         n = 0;
         if x.suit == "Clubs":
-            n = num_cards_lower(hand,x,setup.game.clubs)
-            y = num_cards_you_dont_have_in_suit(hand,setup.game.clubs)
+            n = num_cards_lower(hand,x,configure.game.clubs)
+            y = num_cards_you_dont_have_in_suit(hand,configure.game.clubs)
         elif x.suit == "Spades":
-            n = num_cards_lower(hand,x,card.spades)
-            y = num_cards_you_dont_have_in_suit(hand,setup.game.spades)
+            n = num_cards_lower(hand,x,configure.game.spades)
+            y = num_cards_you_dont_have_in_suit(hand,configure.game.spades)
         elif x.suit == "Diamonds":
-            n = num_cards_lower(hand,x,card.diamonds)
-            y = num_cards_you_dont_have_in_suit(hand,setup.game.diamonds)
+            n = num_cards_lower(hand,x,configure.game.diamonds)
+            y = num_cards_you_dont_have_in_suit(hand,configure.game.diamonds)
         else:
-            n = num_cards_lower(hand,x,card.hearts)
-            y = num_cards_you_dont_have_in_suit(hand,setup.game.hearts)
+            n = num_cards_lower(hand,x,configure.game.hearts)
+            y = num_cards_you_dont_have_in_suit(hand,configure.game.hearts)
         if y == 0:
             y = 1
         probs.append((x,float(n)/y))
     return sorted(probs,key=lambda x : x[1])
 
 """
-Utility Functions
+gui Functions
 """
 def get_cards_of_suit(Player,suit):
     if suit == "Clubs":
