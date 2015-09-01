@@ -1,11 +1,10 @@
 ###### Gui Setup ######
-from player import *
 import card
-import setup
 import random
 import Tkinter
 import string
 import time
+import setup
 
 p = ""
 p1 = ""
@@ -20,7 +19,6 @@ w4 = ""
 app = ""
 card_chosen = card.make_card("2","Clubs")
 back = "/Users/aaronliberatore/Documents/cardCounting/classic-cards/back.gif"
-single_player = False
 
 class Gui(Tkinter.Tk):
 
@@ -30,6 +28,15 @@ class Gui(Tkinter.Tk):
         self.initialize_points()
         self.initialize_cards()
         self.initialize_menu()
+        self.p = ""
+        self.p1 = ""
+        self.p2 = ""
+        self.p3 = ""
+        self.p4 = ""
+        self.w1 = ""
+        self.w2 = ""
+        self.w3 = ""
+        self.w4 = ""
 
     def initialize_points(self):
         global p
@@ -40,35 +47,35 @@ class Gui(Tkinter.Tk):
 
         self.grid()
 
-        button = Tkinter.Button(self,text="Next Play!", command=setup.NextPlay)
+        button = Tkinter.Button(self,text="Next Play!", command=setup.game.NextPlay)
         button.grid(column=0,row=0)
 
         p = Tkinter.StringVar()
         label = Tkinter.Label(self, textvariable=p)
         label.grid(column=1,row=0)
-        p.set("Player Leading: " + str(setup.turn_order[0].name));
+        p.set("Player Leading: " + str(setup.game.turn_order[0].name));
 
         """Initialize Player/Point Labels"""
 
         p1 = Tkinter.StringVar()
         label = Tkinter.Label(self, textvariable=p1, fg="Purple")
         label.grid(column=0,row=1)
-        p1.set("Player1: " + str(setup.player1.Points));
+        p1.set("player1: 0");
 
         p2 = Tkinter.StringVar()
         label2 = Tkinter.Label(self, textvariable=p2,fg="Green")
         label2.grid(column=1,row=1)
-        p2.set("Player2 : " + str(setup.player2.Points));
+        p2.set("player2 : 0");
 
         p3 = Tkinter.StringVar()
         label3 = Tkinter.Label(self, textvariable=p3, fg="Red")
         label3.grid(column=1,row=3)
-        p3.set("Player3: " + str(setup.player3.Points));
+        p3.set("player3: 0");
 
         p4 = Tkinter.StringVar()
         label4 = Tkinter.Label(self, textvariable=p4, fg="Blue")
         label4.grid(column=0,row=3)
-        p4.set("Player4: " + str(setup.player4.Points));
+        p4.set("player4: 0");
 
     def initialize_cards(self):
         global w1
@@ -184,15 +191,15 @@ class Gui(Tkinter.Tk):
         w4.image = img4
 
     def update_points(self):
-        for x in setup.cards_on_table:
+        for x in setup.game.cards_on_table:
             if x[0].name == 1:
-                p1.set("Player1: " + str(setup.player1.Points))
+                p1.set("player1: " + str(setup.game.player1.Points))
             elif x[0].name == 2:
-                p2.set("Player2: " + str(setup.player2.Points))
+                p2.set("player2: " + str(setup.game.player2.Points))
             elif x[0].name == 3:
-                p3.set("Player3: " + str(setup.player3.Points))
+                p3.set("player3: " + str(setup.game.player3.Points))
             else:
-                p4.set("Player4: " + str(setup.player4.Points))
+                p4.set("player4: " + str(setup.game.player4.Points))
 
 def get_file_path(card):
     card_file = "/Users/aaronliberatore/Documents/cardCounting/classic-cards/"
@@ -202,22 +209,21 @@ def get_file_path(card):
 
 def which_player(i):
     if i == 0:
-        return setup.player1
+        return setup.game.player1
     elif i == 1:
-        return setup.player2
+        return setup.game.player2
     elif i == 2:
-        return setup.player3
+        return setup.game.player3
     else:
-        return setup.player4
+        return setup.game.player4
 
 def single_player_game():
     global app
-    global single_player
 
     app.destroy()
 
-    single_player = True
     setup.setup()
+    setup.game.user_player = True
 
     app = Gui(None)
     app.geometry("300x300")
@@ -226,12 +232,11 @@ def single_player_game():
 
 def simulation():
     global app
-    global single_player
 
     app.destroy()
 
-    single_player = False
     setup.setup()
+    setup.game.user_player = False
 
     app = Gui(None)
     app.geometry("300x300")

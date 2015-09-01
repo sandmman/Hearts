@@ -1,9 +1,7 @@
-import player
-
-deck = []
 values = ["2","3","4","5","6","7","8","9","10","Jack","Queen","King","Ace"]
 suits = ["Clubs","Spades","Hearts","Diamonds"]
 
+deck = []
 clubs  = []
 spades = []
 hearts = []
@@ -23,8 +21,6 @@ class Card(object):
         if self.name == card.name and self.suit == card.suit:
             return True
         return False
-    def print_card(self,Player):
-        print("Player" + str(Player.name) + " played: " + self.name  + " of " + self.suit)
 
 def make_card(name, suit):
     card = Card(name, values.index(name), suit)
@@ -55,4 +51,4 @@ def deck_build():
                 diamonds.append(card)
             else:
                 hearts.append(card)
-    print "deck size: " + str(len(deck))
+    return [deck,clubs,spades,diamonds,hearts]
