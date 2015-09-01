@@ -1,5 +1,5 @@
 class Player(object):
-    player_num = 0
+    name = 0
     turn_pos = 0
     Points = 0
     Hand = []
@@ -9,8 +9,8 @@ class Player(object):
     Diamonds = []
 
     # The class "constructor" - It's actually an initializer
-    def __init__(self, hand, player_num, pos):
-        self.player_num = player_num
+    def __init__(self, hand, name, pos):
+        self.name = name
         self.turn_pos = pos
         self.Hand = hand
         self.Clubs = [c for c in hand if c.suit == "Clubs"]
@@ -21,8 +21,16 @@ class Player(object):
         for x in self.Hand:
             print(x.name + " of " + x.suit)
         print("\n")
-    def max_card(self):
-        return sorted(self.Hand,key=lambda x : x.value,reverse = True)[0]
+    def max_card(self,suit):
+        if suit == "Clubs":
+            suits = self.Clubs
+        elif suit == "Spades":
+            suits = self.Spades
+        elif suit == "Hearts":
+            suits = self.Hearts
+        else:
+            suits = self.Diamonds
+        return sorted(suits,key=lambda x : x.value,reverse = True)[0]
 
 def make_player(hand,num,pos):
     player = Player(hand,num, pos)

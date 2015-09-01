@@ -4,6 +4,11 @@ deck = []
 values = ["2","3","4","5","6","7","8","9","10","Jack","Queen","King","Ace"]
 suits = ["Clubs","Spades","Hearts","Diamonds"]
 
+clubs  = []
+spades = []
+hearts = []
+diamonds = []
+
 class Card(object):
     name = ""
     value = 0
@@ -19,7 +24,7 @@ class Card(object):
             return True
         return False
     def print_card(self,Player):
-        print("Player" + str(Player.player_num) + " played: " + self.name  + " of " + self.suit)
+        print("Player" + str(Player.name) + " played: " + self.name  + " of " + self.suit)
 
 def make_card(name, suit):
     card = Card(name, values.index(name), suit)
@@ -36,8 +41,18 @@ def deck_stats(d):
 def deck_build():
     global values
     global suits
+    global deck
 
     for x in values:
         for suit in suits:
-            deck.append(make_card(x,suit))
-    print("\n")
+            card = make_card(x,suit)
+            deck.append(card)
+            if suit == "Clubs":
+                clubs.append(card)
+            elif suit == "Spades":
+                spades.append(card)
+            elif suit == "Diamonds":
+                diamonds.append(card)
+            else:
+                hearts.append(card)
+    print "deck size: " + str(len(deck))
