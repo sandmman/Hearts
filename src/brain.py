@@ -92,9 +92,6 @@ def probabilities_of_winning_trick(hand):
         probs.append((x,float(n)/y))
     return sorted(probs,key=lambda x : x[1])
 
-"""
-gui Functions
-"""
 def get_cards_of_suit(Player,suit):
     if suit == "Clubs":
         return Player.Clubs

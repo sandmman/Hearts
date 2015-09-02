@@ -17,10 +17,12 @@ class Player(object):
         self.Spades = [c for c in hand if c.suit == "Spades"]
         self.Hearts = [c for c in hand if c.suit == "Hearts"]
         self.Diamonds =[c for c in hand if c.suit == "Diamonds"]
+        
     def print_hand(self):
         for x in self.Hand:
             print(x.name + " of " + x.suit)
         print("\n")
+
     def max_card(self,suit):
         if suit == "Clubs":
             suits = self.Clubs

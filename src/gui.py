@@ -1,7 +1,7 @@
 ###### gui configure ######
 import card
 import random
-import Tkinter
+import Tkinter as tk
 import string
 import time
 import configure
@@ -15,15 +15,18 @@ w1 = ""
 w2 = ""
 w3 = ""
 w4 = ""
+var = ""
+button = ""
+z = ""
 
 app = ""
 card_chosen = card.make_card("2","Clubs")
 back = "/Users/aaronliberatore/Documents/cardCounting/classic-cards/back.gif"
 
-class gui(Tkinter.Tk):
+class Gui(tk.Tk):
 
     def __init__(self, parent):
-        Tkinter.Tk.__init__(self, parent)
+        tk.Tk.__init__(self, parent)
         self.parent = parent
         self.initialize_points()
         self.initialize_cards()
@@ -37,6 +40,7 @@ class gui(Tkinter.Tk):
         self.w2 = ""
         self.w3 = ""
         self.w4 = ""
+        self.button = ""
 
     def initialize_points(self):
         global p
@@ -44,101 +48,95 @@ class gui(Tkinter.Tk):
         global p2
         global p3
         global p4
+        global app
+        global var
+        global z
+        global button
 
         self.grid()
+        # Simulation
         if configure.game.user_player == False:
-            button = Tkinter.Button(self,text="Next Play!", command=configure.game.NextPlay)
+            button = tk.Button(self,text="Next Play!", command=configure.game.NextPlay)
             button.grid(column=0,row=0)
+        # Single Player
         else:
-            button = Tkinter.Button(self,text="Next Play!", command= lambda: self.play(configure.game.turn_order))
+            button = tk.Button(self,text="Next Play!", command= lambda: self.user_play(configure.game.turn_order))
             button.grid(column=0,row=0)
 
-        p = Tkinter.StringVar()
-        label = Tkinter.Label(self, textvariable=p)
+            var = tk.StringVar()
+            ls = [y.name + " of " + y.suit for y in configure.game.player1.Hand]
+            var.set("Choose Card")
+            z = tk.OptionMenu(self, var, *ls).grid(column=0,row=5)
+
+            ready = tk.Button(self,text="Selected!", command=self.set_normal)
+            ready.grid(column=1,row=5)
+
+            if configure.game.turn_order[0].name == 1:
+                button.config(state="disabled")
+
+        p = tk.StringVar()
+        label = tk.Label(self, textvariable=p)
         label.grid(column=1,row=0)
         p.set("Player Leading: " + str(configure.game.turn_order[0].name));
 
         """Initialize Player/Point Labels"""
 
-        p1 = Tkinter.StringVar()
-        label = Tkinter.Label(self, textvariable=p1, fg="Purple")
+        p1 = tk.StringVar()
+        label = tk.Label(self, textvariable=p1, fg="Purple")
         label.grid(column=0,row=1)
         p1.set("player1: 0");
 
-        p2 = Tkinter.StringVar()
-        label2 = Tkinter.Label(self, textvariable=p2,fg="Green")
+        p2 = tk.StringVar()
+        label2 = tk.Label(self, textvariable=p2,fg="Green")
         label2.grid(column=1,row=1)
         p2.set("player2 : 0");
 
-        p3 = Tkinter.StringVar()
-        label3 = Tkinter.Label(self, textvariable=p3, fg="Red")
+        p3 = tk.StringVar()
+        label3 = tk.Label(self, textvariable=p3, fg="Red")
         label3.grid(column=1,row=3)
         p3.set("player3: 0");
 
-        p4 = Tkinter.StringVar()
-        label4 = Tkinter.Label(self, textvariable=p4, fg="Blue")
+        p4 = tk.StringVar()
+        label4 = tk.Label(self, textvariable=p4, fg="Blue")
         label4.grid(column=0,row=3)
         p4.set("player4: 0");
-
-    def play(self,order):
-        global p
-        global card_chosen
-
-        if len(order) == 0:
-            return
-        if len(configure.game.deck) == 0:
-            self.stats_window()
-        # Check if hand is over
-        if len(configure.game.cards_on_table) == 4:
-            configure.game.cards_on_table = []
-            self.reset_cards()
-
-        p.set("Player Leading: " + str(configure.game.turn_order[0].name));
-
-        if order[0].name == 1 and configure.game.user_player:
-            configure.game.single_player()
-
-        configure.game.play(order[0],card_chosen)
-        self.update_image(configure.game.cards_on_table[-1][1],configure.game.cards_on_table[-1][0])
-        if len(configure.game.cards_on_table) == 4:
-            self.update_points()
-        self.play(order[1:])
 
     def initialize_cards(self):
         global w1
         global w2
         global w3
         global w4
-        global back
+
+        back = "/Users/aaronliberatore/Documents/cardCounting/classic-cards/back.gif"
 
         """Initialize card display"""
-        card = Tkinter.PhotoImage(file=back)
-        w1 = Tkinter.Label(self, image=card)
+        card = tk.PhotoImage(file=back)
+        w1 = tk.Label(self, image=card)
         w1.image = card
         w1.grid(column=0,row=2)
 
-        card2 = Tkinter.PhotoImage(file=back)
-        w2 = Tkinter.Label(self, image=card2)
+        card2 = tk.PhotoImage(file=back)
+        w2 = tk.Label(self, image=card2)
         w2.image = card2
         w2.grid(column=1,row=2)
 
-        card3 = Tkinter.PhotoImage(file=back)
-        w3 = Tkinter.Label(self, image=card3)
+        card3 = tk.PhotoImage(file=back)
+        w3 = tk.Label(self, image=card3)
         w3.image = card3
         w3.grid(column=1,row=4)
 
-        card4 = Tkinter.PhotoImage(file=back)
-        w4 = Tkinter.Label(self, image=card4)
+        card4 = tk.PhotoImage(file=back)
+        w4 = tk.Label(self, image=card4)
         w4.image = card4
         w4.grid(column=0,row=4)
 
     def initialize_menu(self):
         """Initialize menu bar """
-        menu = Tkinter.Menu(self)
+        menu = tk.Menu(self)
         self.config(menu=menu)
 
-        filemenu = Tkinter.Menu(menu)
-        statsmenu = Tkinter.Menu(menu)
+        filemenu = tk.Menu(menu)
+        statsmenu = tk.Menu(menu)
 
         filemenu.add_command(label="Exit", command=self.onExit)
         filemenu.add_command(label="New Single Player Game", command=single_player_game)
@@ -152,26 +150,35 @@ class gui(Tkinter.Tk):
         self.quit()
 
     def stats_window(self):
-        t = Tkinter.Toplevel(self)
+        t = tk.Toplevel(self)
         t.wm_title("Game Stats")
         t.geometry("450x325")
         t.configure(bg="light slate gray")
 
         for i in range(4):
-            x = Tkinter.StringVar()
-            label = Tkinter.Label(t, textvariable=x,font=("helvetica",12,"bold"), bg="light slate gray")
+            x = tk.StringVar()
+            label = tk.Label(t, textvariable=x,font=("helvetica",12,"bold"), bg="light slate gray")
             label.grid(column=i,row=1)
             x.set("Player " + str(i+1) + ": " + str(which_player(i).Points));
         for i in range(4):
             j = 2
             player = which_player(i)
             for x in player.Hand:
-                y = Tkinter.StringVar()
-                label = Tkinter.Label(t, textvariable=y,bg = "light slate gray")
+                y = tk.StringVar()
+                label = tk.Label(t, textvariable=y,bg = "light slate gray")
                 label.grid(column=i,row=j)
                 sort = sorted(player.Hand,key=lambda x: (x.suit,x.value))
                 y.set(x.name + " of " + x.suit)
                 j += 1
+
+    def update_options(self):
+        global z
+        z.grid_forget()
+
+        var = tk.StringVar()
+        ls = [y.name + " of " + y.suit for y in configure.game.player1.Hand]
+        var.set("Choose Card")
+        z = tk.OptionMenu(self, var, *ls).grid(column=0,row=5)
 
     def update_image(self,card,player):
         global w1
@@ -181,43 +188,45 @@ class gui(Tkinter.Tk):
 
         file_name = get_file_path(card)
         if player.name == 1:
-            img1 = Tkinter.PhotoImage(file=file_name)
+            img1 = tk.PhotoImage(file=file_name)
             w1.configure(image = img1)
             w1.image = img1
         elif player.name == 2:
-            img2 = Tkinter.PhotoImage(file=file_name)
+            img2 = tk.PhotoImage(file=file_name)
             w2.configure(image = img2)
             w2.image = img2
         elif player.name == 3:
-            img3 = Tkinter.PhotoImage(file=file_name)
+            img3 = tk.PhotoImage(file=file_name)
             w3.configure(image = img3)
             w3.image = img3
         else:
-            img4 = Tkinter.PhotoImage(file=file_name)
+            img4 = tk.PhotoImage(file=file_name)
             w4.configure(image = img4)
             w4.image = img4
 
     def reset_cards(self):
-        global back
-        file_name = back
+        back = "/Users/aaronliberatore/Documents/cardCounting/classic-cards/back.gif"
 
-        img1 = Tkinter.PhotoImage(file=file_name)
+        img1 = tk.PhotoImage(file=back)
         w1.configure(image = img1)
         w1.image = img1
 
-        img2 = Tkinter.PhotoImage(file=file_name)
+        img2 = tk.PhotoImage(file=back)
         w2.configure(image = img2)
         w2.image = img2
 
-        img3 = Tkinter.PhotoImage(file=file_name)
+        img3 = tk.PhotoImage(file=back)
         w3.configure(image = img3)
         w3.image = img3
 
-        img4 = Tkinter.PhotoImage(file=file_name)
+        img4 = tk.PhotoImage(file=back)
         w4.configure(image = img4)
         w4.image = img4
 
     def update_points(self):
+        """
+            Updates Gui Score Output
+        """
         for x in configure.game.cards_on_table:
             if x[0].name == 1:
                 p1.set("player1: " + str(configure.game.player1.Points))
@@ -228,13 +237,90 @@ class gui(Tkinter.Tk):
             else:
                 p4.set("player4: " + str(configure.game.player4.Points))
 
+    def set_normal(self):
+        """
+            Allows the user to play once his card is chosen and is valid
+        """
+        global card_chosen
+        global button
+
+        if self.fair_play(card_chosen):
+            button.config(state="normal")
+
+    def set_disabled(self):
+        global button
+        """
+            Used in conjustion with tk - sets ready status
+        """
+        button.config(state="disable")
+
+    def fair_play(self,card_played):
+            """
+                Ensures valid play
+            """
+            if card_played.suit == configure.game.suit_led or len(self.suits_in_hand(card_played)):
+                return True
+            else:
+                return False
+
+    def suits_in_hand(self,card):
+        """
+            returns user cards of same suit
+        """
+        if card.suit == "Clubs":
+            return configure.game.player1.Clubs
+        elif card.suit == "Spades":
+            return configure.game.player1.Spades
+        elif card.suit == "Hearts":
+            return configure.game.player1.Hearts
+        else:
+            return configure.game.player1.Diamonds
+
+    def user_play(self,order):
+        global p
+        global var
+        global card_chosen
+
+        # If the next player to go is the user player -> lock the NextPlay button
+        if configure.game.turn < 3 and order[configure.game.turn+1].name == 1:
+            self.set_disabled()
+        else:
+            self.set_normal()
+
+        if len(configure.game.deck) == 0:
+            self.stats_window()
+        # Check if hand is over
+        if len(configure.game.cards_on_table) == 4:
+            configure.game.cards_on_table = []
+            configure.game.turn = 0
+            self.reset_cards()
+
+        p.set("Player Leading: " + str(configure.game.turn_order[0].name));
+
+        if order[configure.game.turn].name == 1:
+            temp = var.get().split(" ")
+            card_chosen = card.make_card(temp[0],temp[2])
+
+        configure.game.play(order[configure.game.turn],card_chosen)
+        self.update_image(configure.game.cards_on_table[-1][1],configure.game.cards_on_table[-1][0])
+
+        if len(configure.game.cards_on_table) == 4:
+            self.update_points()
+
+        configure.game.turn += 1
+        self.update_options()
+
 def get_file_path(card):
+    """
+        Gets the path for a given card.
+    """
     card_file = "/Users/aaronliberatore/Documents/cardCounting/classic-cards/"
     f = card.name + "OF" + card.suit + ".gif"
     card_file = card_file + f
     return card_file
 
 def which_player(i):
+    """Returns the given player"""
     if i == 0:
         return configure.game.player1
     elif i == 1:
@@ -245,27 +331,27 @@ def which_player(i):
         return configure.game.player4
 
 def single_player_game():
+    """Creates a new single player game"""
     global app
 
     app.destroy()
 
-    configure.setup()
-    configure.game.user_player = True
+    configure.setup(True)
 
-    app = gui(None)
+    app = Gui(None)
     app.geometry("300x300")
     app.title("Hearts")
     app.mainloop()
 
 def simulation():
+    """Creates a new simulation"""
     global app
 
     app.destroy()
 
-    configure.setup()
-    configure.game.user_player = False
+    configure.setup(False)
 
-    app = gui(None)
+    app = Gui(None)
     app.geometry("300x300")
     app.title("Hearts")
     app.mainloop()

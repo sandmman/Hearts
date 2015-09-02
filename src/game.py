@@ -14,16 +14,26 @@ class Game(object):
         self.suit_led = "Clubs"
         self.first_hand = True
         self.user_player = False
-        self.user_card_selected = False
+
         self.player1 = player.make_player([],1,1)
         self.player2 = player.make_player([],2,2)
         self.player3 = player.make_player([],3,3)
         self.player4 = player.make_player([],4,4)
+
+        self.deck = []
         self.clubs  = []
         self.spades = []
         self.hearts = []
         self.diamonds = []
-        self.deck = []
+
+        self.turn = 0
+
+    def check(self):
+        # Edge case of user player has 2 of clubs
+        if self.turn_order[0] == self.player1 and game_type:
+            #app.set_disabled()
+            game.first_hand = False
+            
     def who_won_the_trick(self):
         """
             Finds the person who won the trick --- highest card of the led suit
@@ -36,6 +46,7 @@ class Game(object):
         # Otherwise sort to find the winner
         same_suit = sorted(same_suit,key=lambda x : (x[1].value),reverse = True)
         return same_suit[0][0]
+
     def get_next_turn_order(self):
         """
             Gets the order for the next turn based on the current hand
@@ -137,6 +148,7 @@ class Game(object):
             Removes the most recently played cards from the deck
             and from the individual suit arrays
         """
+        print card_played.name + card_played.suit
         self.deck = [card for card in self.deck if not card.equals(card_played)]
 
         if card_played.suit == "Clubs":
@@ -163,39 +175,12 @@ class Game(object):
             gui.app.reset_cards()
 
         # Run through the hand
+        gui.p.set("Player Leading: " + str(self.turn_order[0].name));
         for x in self.turn_order:
-            gui.p.set("Player Leading: " + str(self.turn_order[0].name));
-
-            if x.name == 1 and self.user_player:
-                self.single_player()
-
             self.play(x,gui.card_chosen)
             gui.app.update_image(self.cards_on_table[-1][1],self.cards_on_table[-1][0])
             if len(self.cards_on_table) == 4:
                 gui.app.update_points()
-
-    def single_player(self):
-        """
-            Faciliates card Selection in Single-Player Mode
-        """
-        var = Tkinter.StringVar()
-        ls = [y.name + " of " + y.suit for y in self.player1.Hand]
-        var.set("Choose Card")
-        z = Tkinter.OptionMenu(gui.app, var, *ls).grid(column=0,row=5)
-
-        ready = Tkinter.Button(gui.app,text="Selected!", command=self.change_ready)
-        ready.grid(column=1,row=5)
-
-        wait = raw_input("Ready?")
-
-        temp = var.get().split(" ")
-        gui.card_chosen = card.make_card(temp[0],temp[2])
-
-        if not self.fair_play(gui.card_chosen):
-
-            wait = raw_input("Not Valid Play?")
-            temp = var.get().split(" ")
-            gui.card_chosen = card.make_card(temp[0],temp[2])
 
     def find_Card(self,card):
         """
@@ -217,35 +202,6 @@ class Game(object):
                 return card
         return None
 
-
-    def change_ready(self):
-        """
-            Used in conjustion with Tkinter - sets ready status
-        """
-        self.user_card_selected = True
-
-    def suits_in_hand(self,card):
-        """
-            returns user cards of same suit
-        """
-        if card.suit == "Clubs":
-            return self.player1.Clubs
-        elif card.suit == "Spades":
-            return self.player1.Spades
-        elif card.suit == "Hearts":
-            return self.player1.Hearts
-        else:
-            return self.player1.Diamonds
-
-    def fair_play(self,card_played):
-        """
-            Ensures valid play
-        """
-        if card_played.suit == self.suit_led or len(self.suits_in_hand(card_played)):
-            return True
-        else:
-            return False
-
     def play(self,Player,card_played):
         """
             Facilitates an individual player's turn
@@ -264,6 +220,7 @@ class Game(object):
         else:
             # First Hand must lead 2 of Clubs
             if self.first_hand:
+                print "Leading first hand"
                 self.bundler(Player,card.make_card("2","Clubs"))
                 self.first_hand = False
             # CPU Player is leading
@@ -271,4 +228,6 @@ class Game(object):
                 brain.card_to_lead(Player)
             # CPU Must follow suit
             else:
+                print "Following"
+                print self.suit_led
                 brain.card_to_follow(Player,self.suit_led);

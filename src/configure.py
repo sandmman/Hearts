@@ -5,13 +5,12 @@ import game as g
 
 game = ""
 
-def setup():
-    """
-        initializes the game and sets up decks and players
-    """
+def setup(game_type):
+    """ Initializes the game and sets up decks/players """
     global game
     game = g.Game()
 
+    game.user_player = game_type
     cards = card.deck_build()
     random.shuffle(cards[0])
 
@@ -30,29 +29,37 @@ def setup():
     c = card.make_card("2","Clubs")
 
     lead = game.find_Card(c)
-
+    print lead
     if lead == 1:
-        pass
+        print "1"
     elif lead == 2:
+        print "2"
         game.player1.turn_pos = 4
         game.player2.turn_pos = 1
         game.player3.turn_pos = 2
         game.player4.turn_pos = 3
         game.turn_order = [game.player2,game.player3,game.player4,game.player1]
     elif lead == 3:
+        print "33"
         game.player1.turn_pos = 3
         game.player2.turn_pos = 4
         game.player3.turn_pos = 1
         game.player4.turn_pos = 2
         game.turn_order = [game.player3,game.player4,game.player1,game.player2]
     else:
+        print "44"
         game.player1.turn_pos = 2
         game.player2.turn_pos = 3
         game.player3.turn_pos = 4
         game.player4.turn_pos = 1
-        turn_order = [game.player4,game.player1,game.player2,game.player3]
+        game.turn_order = [game.player4,game.player1,game.player2,game.player3]
 
     game.player1.print_hand()
     game.player2.print_hand()
     game.player3.print_hand()
     game.player4.print_hand()
+
+    # Edge case of user player has 2 of clubs
+    if game.turn_order[0] == game.player1 and game_type:
+        #app.set_disabled()
+        game.first_hand = False
