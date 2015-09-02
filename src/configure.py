@@ -29,25 +29,21 @@ def setup(game_type):
     c = card.make_card("2","Clubs")
 
     lead = game.find_Card(c)
-    print lead
     if lead == 1:
-        print "1"
+        pass
     elif lead == 2:
-        print "2"
         game.player1.turn_pos = 4
         game.player2.turn_pos = 1
         game.player3.turn_pos = 2
         game.player4.turn_pos = 3
         game.turn_order = [game.player2,game.player3,game.player4,game.player1]
     elif lead == 3:
-        print "33"
         game.player1.turn_pos = 3
         game.player2.turn_pos = 4
         game.player3.turn_pos = 1
         game.player4.turn_pos = 2
         game.turn_order = [game.player3,game.player4,game.player1,game.player2]
     else:
-        print "44"
         game.player1.turn_pos = 2
         game.player2.turn_pos = 3
         game.player3.turn_pos = 4

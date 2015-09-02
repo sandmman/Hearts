@@ -31,9 +31,8 @@ class Game(object):
     def check(self):
         # Edge case of user player has 2 of clubs
         if self.turn_order[0] == self.player1 and game_type:
-            #app.set_disabled()
             game.first_hand = False
-            
+
     def who_won_the_trick(self):
         """
             Finds the person who won the trick --- highest card of the led suit
@@ -101,14 +100,19 @@ class Game(object):
         """
             Groups together function calls for each play
         """
-        self.cards_on_table.append((Player,card_played))
         if Player.turn_pos == 1:
             self.suit_led = card_played.suit
+            self.card_played = card_played
+
+        self.cards_on_table.append((Player,card_played))
         self.update_player(card_played,Player.name)
         self.update_game_cards(card_played)
+
         if len(self.cards_on_table) == 4:
             self.get_next_turn_order()
             card.deck_stats(self.deck)
+            gui.app.update_points()
+            self.turn = -1
 
     def remove_card_from_player(self,player,card_played):
         """
@@ -148,7 +152,6 @@ class Game(object):
             Removes the most recently played cards from the deck
             and from the individual suit arrays
         """
-        print card_played.name + card_played.suit
         self.deck = [card for card in self.deck if not card.equals(card_played)]
 
         if card_played.suit == "Clubs":
@@ -175,12 +178,9 @@ class Game(object):
             gui.app.reset_cards()
 
         # Run through the hand
-        gui.p.set("Player Leading: " + str(self.turn_order[0].name));
         for x in self.turn_order:
-            self.play(x,gui.card_chosen)
+            self.play(x,gui.app.card_chosen)
             gui.app.update_image(self.cards_on_table[-1][1],self.cards_on_table[-1][0])
-            if len(self.cards_on_table) == 4:
-                gui.app.update_points()
 
     def find_Card(self,card):
         """
@@ -220,14 +220,12 @@ class Game(object):
         else:
             # First Hand must lead 2 of Clubs
             if self.first_hand:
-                print "Leading first hand"
                 self.bundler(Player,card.make_card("2","Clubs"))
                 self.first_hand = False
             # CPU Player is leading
             elif Player.turn_pos == 1:
                 brain.card_to_lead(Player)
+                gui.app.p.set("Player " + str(self.turn_order[0].name) + " Led " + self.suit_led);
             # CPU Must follow suit
             else:
-                print "Following"
-                print self.suit_led
                 brain.card_to_follow(Player,self.suit_led);

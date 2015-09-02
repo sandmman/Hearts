@@ -49,12 +49,19 @@ def card_to_follow(Player,lead):
         probs = probabilities_of_winning_trick(possible_plays)
         probs_for_next_hand = probabilities_of_winning_trick(Player.Hand)
 
+        # Base Case
+        if len(possible_plays) == 1:
+            configure.game.bundler(Player,probs[0][0]);
         # If you go last, won't get points, and have low prob of winning next hand
-        # --> play highest card of suit
-        if (Player.turn_pos == 4 and
+        # --> play highest card of suit unless its the queen of spades
+        elif (Player.turn_pos == 4 and
             configure.game.points_on_table() == 0 and
             probs_for_next_hand[0][1] < 0.4):
-            configure.game.bundler(Player,probs[-1][0]);
+            if probs[-1][0].name == "Queen" and probs[-1][0].suit == "Spades":
+                configure.game.bundler(Player,probs[-2][0]);
+            else:
+                configure.game.bundler(Player,probs[-1][0]);
+        # Play your lowest Card of suit
         else:
             configure.game.bundler(Player,probs[0][0]);
     #Player can throw away cards of another suit
